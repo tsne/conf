@@ -13,7 +13,7 @@ type Value reflect.Value
 // If the conversion fails an error is returned.
 func (v *Value) Bool() (bool, error) {
 	var b bool
-	err := v.populate(&b)
+	err := v.decode(&b)
 	return b, err
 }
 
@@ -21,7 +21,7 @@ func (v *Value) Bool() (bool, error) {
 // If the conversion fails an error is returned.
 func (v *Value) Int() (int64, error) {
 	var i int64
-	err := v.populate(&i)
+	err := v.decode(&i)
 	return i, err
 }
 
@@ -29,7 +29,7 @@ func (v *Value) Int() (int64, error) {
 // If the conversion fails an error is returned.
 func (v *Value) Uint() (uint64, error) {
 	var i uint64
-	err := v.populate(&i)
+	err := v.decode(&i)
 	return i, err
 }
 
@@ -37,7 +37,7 @@ func (v *Value) Uint() (uint64, error) {
 // If the conversion fails an error is returned.
 func (v *Value) Float() (float64, error) {
 	var f float64
-	err := v.populate(&f)
+	err := v.decode(&f)
 	return f, err
 }
 
@@ -45,11 +45,11 @@ func (v *Value) Float() (float64, error) {
 // If the conversion fails an error is returned.
 func (v *Value) String() (string, error) {
 	var s string
-	err := v.populate(&s)
+	err := v.decode(&s)
 	return s, err
 }
 
-func (v *Value) populate(value interface{}) error {
+func (v *Value) decode(value interface{}) error {
 	input := *(*reflect.Value)(v)
 	output := reflect.ValueOf(value)
 	if output.Kind() != reflect.Ptr {

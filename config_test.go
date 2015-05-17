@@ -133,7 +133,7 @@ func TestConfigValue(t *testing.T) {
 	}
 }
 
-func TestConfigPopulate(t *testing.T) {
+func TestConfigDecode(t *testing.T) {
 	c := Config{
 		"foo": map[string]interface{}{
 			"one": 1,
@@ -142,7 +142,7 @@ func TestConfigPopulate(t *testing.T) {
 	}
 
 	var i int
-	err := c.Populate("foo.one", &i)
+	err := c.Decode("foo.one", &i)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -150,12 +150,12 @@ func TestConfigPopulate(t *testing.T) {
 		t.Fatalf("unexpected value: %v", i)
 	}
 
-	err = c.Populate("foo.three", &i)
+	err = c.Decode("foo.three", &i)
 	if err == nil {
 		t.Fatalf("expected error, got none")
 	}
 
-	err = c.Populate("foo.two", &i)
+	err = c.Decode("foo.two", &i)
 	if err == nil {
 		t.Fatalf("expected error, got none")
 	}

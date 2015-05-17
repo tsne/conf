@@ -54,17 +54,38 @@ func (c Config) Value(key string) (*Value, error) {
 	return &v, nil
 }
 
-// Populate stores the configuration value with the given key in value.
-// If value has an invalid type an error is returned. Populate tries to
+// Decode stores the configuration value with the given key in value.
+// If value has an invalid type an error is returned. Decode tries to
 // convert the configuration value to value's type (e.g. the string "7"
-// is converted to the integer 7).
-func (c Config) Populate(key string, value interface{}) error {
+// is converted to the integer 7). The given value has to be a pointer,
+// otherwise an error is returned.
+//
+// When decoding a struct each field could provide a 'config' tag. If the
+// tag is "-" the field will be ignored. Otherwise it consists of a custom
+// configuration key, followed by an optional comma and options. If the
+// custom configuration key is empty the field name will be used.
+// Currently only "required" is a valid option. If the "required" option
+// will be set and the key does not exist an error is returned.
+//
+// Tag examples:
+//   // Field will be ignored
+//   Field string `config:"-"`
+//
+//   // Field is required, the key is "Field"
+//   Field string `config:",required"`
+//
+//   // Field is optional, the key is "foobar"
+//   Field string `config:"foobar"`
+//
+//   // Field is required, the key is "foobar"
+//   Field string `config:"foobar,required"`
+func (c Config) Decode(key string, value interface{}) error {
 	val, err := c.Value(key)
 	if err != nil {
 		return err
 	}
-	if err = val.populate(value); err != nil {
-		return fmt.Errorf("cannot populate key '%s': %v", key, err)
+	if err = val.decode(value); err != nil {
+		return fmt.Errorf("cannot decode key '%s': %v", key, err)
 	}
 	return nil
 }
