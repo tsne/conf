@@ -81,7 +81,7 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Printf("listing to %s on port %d\n", svConf.Address, svConf.Port)
+	fmt.Printf("listening to %s on port %d\n", svConf.Address, svConf.Port)
 	fmt.Printf("request timeout: %s\n", requestTimeout)
 }
 ```
