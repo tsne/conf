@@ -71,7 +71,7 @@ type serverConf struct {
 func main() {
 	c := conf.MustLoad(bytes.NewBufferString(myConfStr), json.Unmarshal)
 
-  var requestTimeout time.Duration
+	var requestTimeout time.Duration
 	if err := c.Decode("timeouts.requests", &requestTimeout); err != nil {
 		requestTimeout = 10 * time.Second
 	}
