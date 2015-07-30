@@ -41,7 +41,7 @@ func (v *Value) Float() (float64, error) {
 	return f, err
 }
 
-// Float tries to convert the configuration value to a string value.
+// String tries to convert the configuration value to a string value.
 // If the conversion fails an error is returned.
 func (v *Value) String() (string, error) {
 	var s string
