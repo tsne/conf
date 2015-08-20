@@ -548,13 +548,34 @@ func TestDecodeSimpleStruct(t *testing.T) {
 }
 
 func TestDecodeNestedStruct(t *testing.T) {
+	type subConf struct {
+		Sub1 int
+		Sub2 float32
+	}
+
 	nested := struct {
-		Foo string
-		Bar struct {
-			Sub1 int
-			Sub2 float32
-		}
+		Foo    string
+		Bar    subConf
+		Foobar *subConf
 	}{}
+
+	validDecode(t, &nested, map[string]interface{}{
+		"foobar": map[string]int{
+			"Sub1": 7,
+			"Sub2": 3,
+		},
+	})
+	if nested.Foo != "" ||
+		nested.Bar.Sub1 != 0 ||
+		nested.Bar.Sub2 != 0 ||
+		nested.Foobar == nil ||
+		nested.Foobar.Sub1 != 7 ||
+		nested.Foobar.Sub2 != 3 {
+
+		t.Fatalf("unexpected struct value: %+v", nested)
+	}
+
+	nested.Foobar = nil // reset value
 
 	validDecode(t, &nested, map[string]interface{}{
 		"Foo": "foo",
@@ -566,7 +587,8 @@ func TestDecodeNestedStruct(t *testing.T) {
 	})
 	if nested.Foo != "foo" ||
 		nested.Bar.Sub1 != 7 ||
-		nested.Bar.Sub2 != 1.5 {
+		nested.Bar.Sub2 != 1.5 ||
+		nested.Foobar != nil {
 
 		t.Fatalf("unexpected struct value: %+v", nested)
 	}

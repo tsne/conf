@@ -423,7 +423,18 @@ func decodePtr(output, input reflect.Value) error {
 	if input.Kind() == reflect.Ptr {
 		input = input.Elem()
 	}
-	return decode(output.Elem(), input)
+	if !output.IsNil() {
+		return decode(output.Elem(), input)
+	}
+
+	// The output value is nil. Create a new value
+	// and assign it to output.
+	val := reflect.New(output.Type().Elem())
+	if err := decode(val, input); err != nil {
+		return err
+	}
+	output.Set(val)
+	return nil
 }
 
 func convertNumericString(v reflect.Value) reflect.Value {
